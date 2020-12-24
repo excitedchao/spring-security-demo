@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springsecuritydemo.mapper.UserRoleMapper">
+    
+    <resultMap type="UserRole" id="UserRoleResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="roleId"    column="role_id"    />
+    </resultMap>
+
+    <sql id="selectUserRoleVo">
+        select id, user_id, role_id from sy_user_role
+    </sql>
+
+    <select id="selectUserRoleList" parameterType="UserRole" resultMap="UserRoleResult">
+        <include refid="selectUserRoleVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserRoleById" parameterType="Long" resultMap="UserRoleResult">
+        <include refid="selectUserRoleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertUserRole" parameterType="UserRole">
+        insert into sy_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="roleId != null">role_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="roleId != null">#{roleId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserRole" parameterType="UserRole">
+        update sy_user_role
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="roleId != null">role_id = #{roleId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserRoleById" parameterType="Long">
+        delete from sy_user_role where id = #{id}
+    </delete>
+
+    <delete id="deleteUserRoleByIds" parameterType="String">
+        delete from sy_user_role where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springsecuritydemo.mapper.RolePermissionMapper">
+    
+    <resultMap type="RolePermission" id="RolePermissionResult">
+        <result property="roleId"    column="role_id"    />
+        <result property="permissionId"    column="permission_id"    />
+    </resultMap>
+
+    <sql id="selectRolePermissionVo">
+        select role_id, permission_id from sy_role_permission
+    </sql>
+
+    <select id="selectRolePermissionList" parameterType="RolePermission" resultMap="RolePermissionResult">
+        <include refid="selectRolePermissionVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectRolePermissionById" parameterType="Long" resultMap="RolePermissionResult">
+        <include refid="selectRolePermissionVo"/>
+        where role_id = #{roleId}
+    </select>
+        
+    <insert id="insertRolePermission" parameterType="RolePermission">
+        insert into sy_role_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">role_id,</if>
+            <if test="permissionId != null">permission_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">#{roleId},</if>
+            <if test="permissionId != null">#{permissionId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRolePermission" parameterType="RolePermission">
+        update sy_role_permission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="permissionId != null">permission_id = #{permissionId},</if>
+        </trim>
+        where role_id = #{roleId}
+    </update>
+
+    <delete id="deleteRolePermissionById" parameterType="Long">
+        delete from sy_role_permission where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRolePermissionByIds" parameterType="String">
+        delete from sy_role_permission where role_id in 
+        <foreach item="roleId" collection="array" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+</mapper>
